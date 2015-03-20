@@ -16,6 +16,8 @@ class WriteTODOViewController: UIViewController, UITextFieldDelegate {
 	
 	var todo: Todo!
 	
+	var selectedIndex: Int?
+	
 	override func loadView() {
 		NSBundle.mainBundle().loadNibNamed("WriteTODOViewController", owner: self, options: nil)
 	}
@@ -24,11 +26,13 @@ class WriteTODOViewController: UIViewController, UITextFieldDelegate {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
 		
-		if todo == nil {
+		if selectedIndex == -1 {
 			todo = Todo()
 			
 			textField.becomeFirstResponder()
 		} else {
+			todo = Todos.todos[selectedIndex!]
+			
 			textField.text = todo.title
 			textView.text = todo.detail
 			
@@ -71,8 +75,10 @@ class WriteTODOViewController: UIViewController, UITextFieldDelegate {
 			dateFormatter.timeStyle = NSDateFormatterStyle.ShortStyle
 			
 			todo.dueDate = dateFormatter.stringFromDate(pickerView.date)
-
-			Todos.todos.append(todo)
+			
+			if selectedIndex == -1 {
+				Todos.todos.append(todo)
+			}
 			
 			self.navigationController?.popViewControllerAnimated(true)
 		}

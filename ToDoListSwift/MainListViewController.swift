@@ -8,11 +8,20 @@
 
 import UIKit
 
+enum ToDoListType: Int {
+	case ToDoListTypeWrite = 0
+	case ToDoListTypeModify = 1
+}
+
 class MainListViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 	
 	@IBOutlet weak var tableView: UITableView!
 	
 	@IBOutlet weak var editBtn: UIButton!
+	
+	var toDoListType: ToDoListType?
+	
+	var selectedIndex: Int?
 	
 	override func loadView() {
 		NSBundle.mainBundle().loadNibNamed("MainListViewController", owner: self, options: nil)
@@ -26,6 +35,7 @@ class MainListViewController: UIViewController, UITableViewDelegate, UITableView
 	override func viewWillAppear(animated: Bool) {
 		super.viewWillAppear(animated)
 		
+		selectedIndex = -1
 		tableView.reloadData()
 	}
 
@@ -37,6 +47,7 @@ class MainListViewController: UIViewController, UITableViewDelegate, UITableView
 	//MARK: - IBActions
     
 	@IBAction func addList(sender: AnyObject) {
+		toDoListType = ToDoListType.ToDoListTypeWrite
 		self.performSegueWithIdentifier("PushWriteTODOViewController", sender: self)
 	}
 
@@ -108,7 +119,9 @@ class MainListViewController: UIViewController, UITableViewDelegate, UITableView
 	// MARK: - UITableViewDelegate
 	
 	func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-		
+		toDoListType = ToDoListType.ToDoListTypeModify
+		selectedIndex = indexPath.row
+		self.performSegueWithIdentifier("PushWriteTODOViewController", sender: self)
 	}
 	
     // MARK: - Navigation
@@ -120,7 +133,7 @@ class MainListViewController: UIViewController, UITableViewDelegate, UITableView
 		
 		if segue.identifier == "PushWriteTODOViewController" {
 			var writeTODOViewController: WriteTODOViewController = segue.destinationViewController as WriteTODOViewController
-//			writeTODOViewController.todo = lists[0]
+			writeTODOViewController.selectedIndex = selectedIndex
 		}
     }
 
